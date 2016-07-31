@@ -2,12 +2,25 @@
 #define ANN_H
 #include<iostream>
 #include<cmath>
+#include<cstdio>
 #include<vector>
 #include<map>
 #include<string>
+#include<sstream>
+#include<fstream>
 #include<stdarg.h>
 #include"funct.h"
 using namespace std;
+
+vector<string> split(string s, char delim) {
+    vector<string>elems;
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim))
+        elems.push_back(item);
+    return elems;
+}
+
 class ANNode{
     public:
         ANNode(size_t i):index(i),actfunc(new Sigmoid(1)){}
@@ -36,7 +49,7 @@ class ANN{
             eta = 0.08;
             bias = 0;
         }
-        
+
 
         void printDval(){
             cout<<"dval:"<<endl;
@@ -160,7 +173,54 @@ class ANN{
             }
         }
         void save(string fn){
-        
+            ofstream ofs(fn,ofstream::out);
+            for(size_t i=0;i<pool.size();i++){
+                for(size_t j=0;j<pool.size();j++){
+                    if(weight.find(XKEY(i,j))!=weight.end())
+                        ofs<<weight[XKEY(i,j)]<<",";
+                    else
+                        ofs<<"N"<<",";
+                }
+                ofs<<";";
+            }
+            ofs<<"@";
+            for(size_t i=0;i<layer.size();i++){
+                for(size_t j=0;j<layer[i].size();j++)
+                    ofs<<layer[i][j]<<",";
+                ofs<<";";
+            }
+            ofs<<"@";
+            ofs<<bias<<endl;
+            ofs.close();
+        }
+        void load(string fn){
+            ifstream ifs(fn,ifstream::in);
+            ifs.seekg(0,ios::end);
+            size_t len = ifs.tellg();
+            ifs.seekg(0,ios::beg);
+            char str[len];
+            ifs.read(str,len);
+            string w = split(string(str),'@')[0];
+            string l = split(string(str),'@')[1];
+            string b = split(string(str),'@')[2];
+            bias = stoi(b);
+            vector<string>vwr = split(w,';');
+            for(size_t i=0;i<vwr.size();i++){
+                vector<string>e = split(vwr[i],',');
+                for(size_t j=0;j<e.size();j++){
+                    if(e[j]!="N"){
+                        weight[XKEY(i,j)] = stod(e[j]);
+                        pool[i]->o.push_back(j);
+                        pool[j]->i.push_back(i);
+                    }
+                }
+            }
+            vector<string>vl = split(l,';');
+            for(size_t i=0;i<vl.size();i++){
+                vector<string>e = split(vl[i],',');
+                for(size_t j=0;j<e.size();j++)
+                    layer[i].push_back(stoi(e[j]));
+            }
         }
         ANNode*result;
         FUNCT*actf;
