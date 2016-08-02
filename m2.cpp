@@ -1,4 +1,4 @@
-#include"ANN.h"
+#include"ann.h"
 
 int main(){
     ANN ann = ANN(4,4);

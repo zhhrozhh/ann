@@ -24,5 +24,23 @@ class Sigmoid:public FUNCT{
             return log(x/(1-x));
         }
 };
+class Phi:public FUNCT{
+    public:
+        
+        Phi(double m,double s):FUNCT(),m(m),s(s){}
+        
+        double m;
+        double s;
+        double f(double x){
+            return 0.5*(1+erf((x-m)/(s*sqrt(2))));
+        }
+        double d(double x){
+            return exp(-(x-m)*(x-m)/(2*s*s))/(s*sqrt(2*M_PI));
+        }
+        double inv(double x){
+            return 0;
+        }
+        
+};
 #endif
 
