@@ -11,19 +11,20 @@ int main(){
         layer.push_back(i);
     muann.layerize(2,layer);
     muann.layerize(3,14,-1);
-    muann.configActf(new Tanh());
+    muann.configActf(new Sigmoid_());
     muann.configBPLayer();
     muann.configBPBias();
-    muann.eta = 0.01;
+    muann.eta = 0.0065;
     cout.precision(5);
     //muann.printWeight();
     cout<<"================"<<endl;
-    /*for(size_t i=0;i<2000;i++){
+    for(size_t i=0;i<20000;i++){
         vector<double>sample = random_sample(12);
         vector<double>solution(1,minmd(sample,0.7));
-        muann.train(sample,solution);
+        if(solution[0]<5 and solution[0]>-5)
+            muann.train(sample,solution,20);
    // muann.printWeight();
-    }*/
+    }
 
     for(size_t i=0;i<200;i++){
         vector<double>sample = random_sample(12);

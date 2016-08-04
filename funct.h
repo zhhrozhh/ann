@@ -47,25 +47,25 @@ class Sigmoid_:public FUNCT{
     public:
         Sigmoid_():FUNCT(){}
         double f(double x){
-            return 10/(1+exp(-x)) - 5;
+            return 10/(1+exp(-0.2*x)) - 5;
         }
         double d(double x){
             return 2*exp(-0.2*x)/((exp(-0.2*x)+1)*(exp(-0.2*x)+1));
         }
         double inv(double x){
-            return 0;
+            return -log(10/(x+5)-1)/0.2;
         }
 };
 class Tanh:public FUNCT{
     public:
         double f(double x){
-            return 10*tanh(x);
+            return tanh(x);
         }
         double d(double x){
-            return 10*sech(x)*sech(x);
+            return sech(x)*sech(x);
         }
         double inv(double x){
-            return 0;
+            return atanh(x);
         }
 };
 #endif
